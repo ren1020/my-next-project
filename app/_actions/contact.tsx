@@ -43,6 +43,53 @@ export async function createContactData(_prevent: any, formData: FormData) {
             message: "メッセージを入力してください。",
         };
     }
+    const result = await fetch(
+        "https://api.hsforms.com/submissions/v3integration/submit/${process.env.HUBSPOT_PORTAL_ID}/${process.env.HUBSPOT_FORM_ID}",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                fields: [
+                    {
+                        objectTypeID: "0-1",
+                        name: "lastname",
+                        value: rawData.lastname,
+                    },
+                    {
+                        objectTypeID: "0-1",
+                        name: "firstname",
+                        value: rawData.firstname,
+                    },
+                    {
+                        objectTypeID: "0-1",
+                        name: "company",
+                        value: rawData.company,
+                    },
+                    {
+                        objectTypeID: "0-1",
+                        name: "email",
+                        value: rawData.email,
+                    },
+                    {
+                        objectTypeID: "0-1",
+                        name: "message",
+                        value: rawData.message,
+                    },
+                ],
+             }),
+            },
+        );
 
+        try {
+            await result.json();
+        } catch (e) {
+            console.log(e);
+            return {
+                status : "error",
+                message: "お問い合わせに失敗しました。",
+            };
+        }
     return { status: "success", message: "OK" };
 }
